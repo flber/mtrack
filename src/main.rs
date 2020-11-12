@@ -2,7 +2,7 @@ use chrono::{DateTime, Local};
 use std::env;
 use std::{fs, fs::File, io, io::Write};
 
-const HELP_MENU: &str = "\nThis is a tracking program.\n\nUse `tracker` with no arguments or with the `-h` argument to find this menu.\n\nTo make a log, write `tracker xxx message`, and it will record it in a ``~/.config/tracker/log.txt` file.\n\n - The `xxx` can be any list of 0-3 characters to represent up or down changes in mood.\n\n - The `message` should be a message explaining the change.\n";
+const HELP_MENU: &str = "\nThis is a tracking program.\n\nUse `tracker` with no arguments or with the `-h` argument to find this menu.\n\nTo make a log, write `tracker xxx message`, and it will record it in a `~/.config/tracker/log.txt` file.\n\n - The `xxx` can be any list of 0-3 characters to represent up or down changes in mood.\n\n - The `message` should be a message explaining the change.\n";
 
 // path to tracker log file
 const LOG_PATH: &str = "/home/benh/.config/tracker/log.txt";
