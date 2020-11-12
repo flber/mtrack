@@ -2,12 +2,12 @@ use chrono::{DateTime, Local};
 use std::env;
 use std::{fs, fs::File, io, io::Write};
 
-const HELP_MENU: &str = "\nThis is a tracking program.\n\nUse `tracker` with no arguments or with the `-h` argument to find this menu.\n\nTo make a log, write `tracker xxx message`, and it will record it in a `~/.config/tracker/log.txt` file.\n\n - The `xxx` can be any list of 0-3 characters to represent up or down changes in mood.\n\n - The `message` should be a message explaining the change.\n";
+const HELP_MENU: &str = "\nThis is a tracking program.\n\nUse `tracker` with no arguments or with the `-h` argument to find this menu.\n\nTo make a log, write `tracker xxx message`, and it will record it in a `~/.config/mtrack/log.txt` file (which needs to be provided).\n\n - The `xxx` can be any list of 0-3 characters to represent up or down changes in mood.\n\n - The `message` should be a message explaining the change.\n";
 
 // path to tracker log file
-const LOG_PATH: &str = "/home/benh/.config/tracker/log.txt";
+const LOG_PATH: &str = "/home/benh/.config/mtrack/log.txt";
 // path to temporary file (used in prepending logs)
-const TEMP_PATH: &str = "/home/benh/.config/tracker/temp.txt";
+const TEMP_PATH: &str = "/home/benh/.config/mtrack/temp.txt";
 
 fn main() {
 	// gets the datetime and formats it
@@ -72,6 +72,7 @@ fn main() {
 	    if valid {
 	    	entry.extend("\n".as_bytes().to_vec());
 	    	prepend_file(&entry, LOG_PATH);
+	    	println!("logged")
 	    }
 	}
 }
