@@ -1,15 +1,13 @@
 use chrono::{DateTime, Local};
+use shellexpand;
 use std::env;
 use std::{fs, fs::File, io, io::Write};
 
 const HELP_MENU: &str = "\nThis is a tracking program.\n\nUse `tracker` with no arguments or with the `-h` argument to find this menu.\n\nTo make a log, write `tracker xxx message`, and it will record it in a `~/.config/mtrack/log.txt` file (which needs to be provided).\n\n - The `xxx` can be any list of 0-3 characters to represent up or down changes in mood.\n\n - The `message` should be a message explaining the change.\n";
 
-// path to tracker log file
-const LOG_PATH: &str = "/home/benh/.config/mtrack/log.txt";
-// path to temporary file (used in prepending logs)
-const TEMP_PATH: &str = "/home/benh/.config/mtrack/temp.txt";
-
 fn main() {
+	let log_path: &str = &format!("{}{}", shellexpand::tilde("~/.config/mtrack/"), "log.txt");
+
 	// gets the datetime and formats it
     let datetime: DateTime<Local> = Local::now();
     let formatted_datetime = datetime.format("%d%m%y:%H%M%S");
@@ -71,7 +69,7 @@ fn main() {
 	    // if the entry is still valid (mood is under 3 characters and it wasn't `-h`, it adds a newline to the entry and prepends it to the log file)
 	    if valid {
 	    	entry.extend("\n".as_bytes().to_vec());
-	    	prepend_file(&entry, LOG_PATH);
+	    	prepend_file(&entry, log_path);
 	    	println!("logged")
 	    }
 	}
@@ -79,13 +77,18 @@ fn main() {
 
 // prepends a slice to a file
 fn prepend_file(data: &[u8], file_path: &str) {
-    let mut tmp =
-        File::create(TEMP_PATH).expect("could not create temp file");
-    let mut src = File::open(&file_path).expect("could not open given file");
+	let temp_path: &str = &format!("{}{}", shellexpand::tilde("~/.config/mtrack/"), "temp.txt");
+
+    let mut tmp = File::create(temp_path)
+    	.expect("could not create temp file");
+    let mut src = File::open(&file_path)
+    	.expect("could not open given file");
     tmp.write_all(&data)
-        .expect("could not write data to temp file");
-    io::copy(&mut src, &mut tmp).expect("could not copy source to temp");
-    fs::remove_file(&file_path).expect("could not remove file");
-    fs::rename(TEMP_PATH, &file_path)
+    	.expect("could not write data to temp file");
+    io::copy(&mut src, &mut tmp)
+    	.expect("could not copy source to temp");
+    fs::remove_file(&file_path)
+    	.expect("could not remove file");
+    fs::rename(temp_path, &file_path)
         .expect("could not rename temp file");
 }
